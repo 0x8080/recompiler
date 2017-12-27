@@ -586,6 +586,24 @@ namespace cpu
 		ControlReg	CR6_SO;
 		ControlReg	CR7_SO;
 
+		ControlReg	CR0_LT;
+		ControlReg	CR1_LT;
+		ControlReg	CR2_LT;
+		ControlReg	CR3_LT;
+		ControlReg	CR4_LT;
+		ControlReg	CR5_LT;
+		ControlReg	CR6_LT;
+		ControlReg	CR7_LT;
+
+		ControlReg	CR0_GT;
+		ControlReg	CR1_GT;
+		ControlReg	CR2_GT;
+		ControlReg	CR3_GT;
+		ControlReg	CR4_GT;
+		ControlReg	CR5_GT;
+		ControlReg	CR6_GT;
+		ControlReg	CR7_GT;
+
 		ControlReg	CR0_EQ;
 		ControlReg	CR1_EQ;
 		ControlReg	CR2_EQ;
@@ -2596,7 +2614,16 @@ namespace cpu
 		template <uint8 CTRL>
 		static CPU_INLINE void cror(CpuRegs& regs, ControlReg* out, const ControlReg a, const ControlReg b)
 		{
-			
+			ASM_CHECK(CTRL == 0);
+
+		}
+
+		//Condition Register OR with Complement - TODO
+		template <uint8 CTRL>
+		static CPU_INLINE void crorc(CpuRegs& regs, ControlReg* out, const ControlReg a, const ControlReg b)
+		{
+			ASM_CHECK(CTRL == 0);
+
 		}
 
 		//---------------------------------------------------------------------------------
@@ -4086,6 +4113,17 @@ namespace cpu
 			out->AsInt32<2>() = vsat32i(regs, (int32)a.AsInt32<2>() - (int32)b.AsInt32<2>());
 			out->AsInt32<3>() = vsat32i(regs, (int32)a.AsInt32<3>() - (int32)b.AsInt32<3>());
 		}
+
+		//Vector Subtract Signed Byte Saturate TODO: Double Check This
+		template <uint8 CTRL>
+		static CPU_INLINE void vsubsbs(CpuRegs& regs, TVReg* out, const TVReg a, const TVReg b)
+		{
+			ASM_CHECK(CTRL == 0);
+			out->AsInt8<0>() = vsat8i(regs, (int8)a.AsInt8<0>() - (int8)b.AsInt8<0>());
+			out->AsInt8<1>() = vsat8i(regs, (int8)a.AsInt8<1>() - (int8)b.AsInt8<1>());
+			out->AsInt8<2>() = vsat8i(regs, (int8)a.AsInt8<2>() - (int8)b.AsInt8<2>());
+			out->AsInt8<3>() = vsat8i(regs, (int8)a.AsInt8<3>() - (int8)b.AsInt8<3>());
+		}
 		
 		//Vector Subtract Unsigned Byte Saturate
 		template <uint8 CTRL>
@@ -4302,6 +4340,7 @@ namespace cpu
 			}
 		}
 
+		// Vector Pack Signed Word Signed Saturate
 		template <uint8 CTRL>
 		static CPU_INLINE void vpkswss(CpuRegs& regs, TVReg* out, const TVReg a, const TVReg b)
 		{
@@ -4314,6 +4353,21 @@ namespace cpu
 			out->AsInt16<5>() = vpack_s<int16_t, int32_t>(regs, b.AsInt32<1>());
 			out->AsInt16<6>() = vpack_s<int16_t, int32_t>(regs, b.AsInt32<2>());
 			out->AsInt16<7>() = vpack_s<int16_t, int32_t>(regs, b.AsInt32<3>());
+		}
+
+		// Vector Pack Signed Word Unsigned Saturate
+		template <uint8 CTRL>
+		static CPU_INLINE void vpkswus(CpuRegs& regs, TVReg* out, const TVReg a, const TVReg b)
+		{
+			ASM_CHECK(CTRL == 0);
+			out->AsUint16<0>() = vpack_s<uint16, uint32>(regs, a.AsUint32<0>());
+			out->AsUint16<1>() = vpack_s<uint16, uint32>(regs, a.AsUint32<1>());
+			out->AsUint16<2>() = vpack_s<uint16, uint32>(regs, a.AsUint32<2>());
+			out->AsUint16<3>() = vpack_s<uint16, uint32>(regs, a.AsUint32<3>());
+			out->AsUint16<4>() = vpack_s<uint16, uint32>(regs, b.AsUint32<0>());
+			out->AsUint16<5>() = vpack_s<uint16, uint32>(regs, b.AsUint32<1>());
+			out->AsUint16<6>() = vpack_s<uint16, uint32>(regs, b.AsUint32<2>());
+			out->AsUint16<7>() = vpack_s<uint16, uint32>(regs, b.AsUint32<3>());
 		}
 
 		template <uint8 CTRL>
